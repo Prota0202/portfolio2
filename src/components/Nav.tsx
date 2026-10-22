@@ -1,17 +1,23 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { gsap, scrollToTarget, setScrollLocked } from '../lib/scroll'
-import { profile } from '../data'
-
-const links = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Service', href: '#service' },
-  { label: 'Project', href: '#work' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Contact', href: '#contact' },
-]
+import { usePortfolio } from '../i18n/context'
+import LanguageToggle from './LanguageToggle'
 
 export default function Nav({ visible }: { visible: boolean }) {
+  const { profile, content } = usePortfolio()
+  const n = content.ui.nav
+  const links = useMemo(
+    () => [
+      { label: n.home, href: '#home' },
+      { label: n.about, href: '#about' },
+      { label: n.service, href: '#service' },
+      { label: n.project, href: '#work' },
+      { label: n.experience, href: '#experience' },
+      { label: n.contact, href: '#contact' },
+    ],
+    [n],
+  )
+
   const [open, setOpen] = useState(false)
   const bar = useRef<HTMLDivElement>(null)
   const menu = useRef<HTMLDivElement>(null)
@@ -53,11 +59,11 @@ export default function Nav({ visible }: { visible: boolean }) {
           visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
         }`}
       >
-        <div className="flex h-14 items-center justify-between px-6 md:h-[70px] md:px-10">
-          <button onClick={() => go('#home')} className="font-display text-sm font-extrabold tracking-[0.12em] uppercase md:text-[15px]">
+        <div className="flex h-14 items-center justify-between gap-3 px-6 md:h-[70px] md:px-10">
+          <button onClick={() => go('#home')} className="min-w-0 truncate font-display text-sm font-extrabold tracking-[0.12em] uppercase md:text-[15px]">
             {profile.fullName}
           </button>
-          <div className="hidden items-center gap-8 lg:flex">
+          <div className="hidden items-center gap-6 lg:flex">
             {links.slice(1).map((l) => (
               <button
                 key={l.href}
@@ -68,18 +74,22 @@ export default function Nav({ visible }: { visible: boolean }) {
                 <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 group-hover:scale-x-100" />
               </button>
             ))}
+            <LanguageToggle />
           </div>
-          <button
-            onClick={() => setOpen((o) => !o)}
-            aria-label="Toggle menu"
-            className="flex h-9 items-center gap-3 rounded-full border border-white/15 px-4 font-display text-[11px] font-semibold tracking-[0.22em] uppercase lg:hidden"
-          >
-            {open ? 'Close' : 'Menu'}
-            <span className="relative block h-2 w-4">
-              <span className={`absolute left-0 h-px w-4 bg-white transition-transform ${open ? 'top-1 rotate-45' : 'top-0'}`} />
-              <span className={`absolute left-0 h-px w-4 bg-white transition-transform ${open ? 'top-1 -rotate-45' : 'top-2'}`} />
-            </span>
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <LanguageToggle />
+            <button
+              onClick={() => setOpen((o) => !o)}
+              aria-label={open ? n.close : n.menu}
+              className="flex h-9 items-center gap-3 rounded-full border border-white/15 px-4 font-display text-[11px] font-semibold tracking-[0.22em] uppercase"
+            >
+              {open ? n.close : n.menu}
+              <span className="relative block h-2 w-4">
+                <span className={`absolute left-0 h-px w-4 bg-white transition-transform ${open ? 'top-1 rotate-45' : 'top-0'}`} />
+                <span className={`absolute left-0 h-px w-4 bg-white transition-transform ${open ? 'top-1 -rotate-45' : 'top-2'}`} />
+              </span>
+            </button>
+          </div>
         </div>
         <div ref={bar} className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-white/80" />
       </nav>

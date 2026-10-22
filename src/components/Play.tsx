@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { usePortfolio } from '../i18n/context'
 
 const GLYPHS: Record<string, string[]> = {
   H: ['10001', '10001', '10001', '11111', '10001', '10001', '10001'],
@@ -15,6 +16,8 @@ type Brick = { x: number; y: number; s: number; alive: boolean }
 type Mode = 'demo' | 'playing' | 'won' | 'lost'
 
 export default function Play() {
+  const { content } = usePortfolio()
+  const playUi = content.ui.play
   const wrap = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
   const modeRef = useRef<Mode>('demo')
@@ -207,16 +210,16 @@ export default function Play() {
   }
 
   const status = {
-    demo: 'Ready',
-    playing: `Score ${score}`,
-    won: `Hello, world. ${score} bricks — you win.`,
-    lost: `Game over — ${score} bricks`,
+    demo: playUi.ready,
+    playing: playUi.score(score),
+    won: playUi.won(score),
+    lost: playUi.lost(score),
   }[mode]
 
   return (
     <section id="play" className="bg-[#050505] px-4 py-24 text-white sm:px-6 md:px-16 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <p className="mx-auto w-max border-b border-white/40 pb-1 text-[11px] text-white/80">Train it, break it, ship it.</p>
+        <p className="mx-auto w-max border-b border-white/40 pb-1 text-[11px] text-white/80">{playUi.tagline}</p>
         <div ref={wrap} className="relative mt-6">
           <canvas ref={canvas} className={`block w-full ${mode === 'playing' ? 'cursor-none' : ''}`} aria-label="Breakout game spelling HELLO WORLD" />
           <div className="mt-4 flex items-center justify-between">
@@ -225,7 +228,7 @@ export default function Play() {
               onClick={start}
               className="border border-white/30 px-4 py-1.5 font-mono text-[10px] tracking-[0.25em] uppercase transition-colors hover:bg-white hover:text-black"
             >
-              {mode === 'playing' ? 'Restart' : 'Play'}
+              {mode === 'playing' ? playUi.restart : playUi.play}
             </button>
           </div>
         </div>

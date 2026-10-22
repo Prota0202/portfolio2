@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from '../lib/scroll'
-import { profile } from '../data'
+import { usePortfolio } from '../i18n/context'
 
 export default function Loader({ onDone }: { onDone: () => void }) {
+  const { profile } = usePortfolio()
   const root = useRef<HTMLDivElement>(null)
   const done = useRef(onDone)
 

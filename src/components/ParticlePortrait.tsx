@@ -46,7 +46,17 @@ function drawSource(ctx: CanvasRenderingContext2D, w: number, h: number, img: HT
   ctx.fillText(text, w / 2, h * 0.7)
 }
 
-export default function ParticlePortrait({ ready, src, text }: { ready: boolean; src: string; text: string }) {
+export default function ParticlePortrait({
+  ready,
+  src,
+  text,
+  portraitLabel,
+}: {
+  ready: boolean
+  src: string
+  text: string
+  portraitLabel: string
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const readyRef = useRef(ready)
 
@@ -194,5 +204,5 @@ export default function ParticlePortrait({ ready, src, text }: { ready: boolean;
     }
   }, [src, text])
 
-  return <canvas ref={canvasRef} role="img" aria-label={`Portrait of ${text} made of particles`} className="pointer-events-none absolute inset-0 z-10 h-full w-full" />
+  return <canvas ref={canvasRef} role="img" aria-label={portraitLabel} className="pointer-events-none absolute inset-0 z-10 h-full w-full" />
 }

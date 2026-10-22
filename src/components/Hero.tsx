@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { gsap, scrollToTarget } from '../lib/scroll'
-import { profile } from '../data'
+import { usePortfolio } from '../i18n/context'
 import ParticlePortrait from './ParticlePortrait'
 
 export default function Hero({ ready }: { ready: boolean }) {
+  const { profile, content } = usePortfolio()
+  const h = content.ui.hero
   const root = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function Hero({ ready }: { ready: boolean }) {
       className="relative flex min-h-screen items-end justify-center overflow-hidden"
       style={{ background: 'radial-gradient(circle at 50% 55%, #222 0%, #000 80%)' }}
     >
-      <ParticlePortrait ready={ready} src={profile.portrait} text="AL" />
+      <ParticlePortrait ready={ready} src={profile.portrait} text="AL" portraitLabel={content.ui.loaderPortrait(profile.fullName)} />
 
       <div data-hero-title className="pointer-events-none absolute top-[74%] left-1/2 z-20 flex w-max -translate-x-1/2 -translate-y-1/2 flex-col items-start select-none">
         <h1 className="flex overflow-hidden font-display text-[min(15.5vw,14rem)] leading-none font-black tracking-tighter uppercase drop-shadow-2xl">
@@ -50,7 +52,7 @@ export default function Hero({ ready }: { ready: boolean }) {
         <div data-hero-sub className="pointer-events-auto absolute -bottom-24 left-1/2 flex w-max -translate-x-1/2 items-center gap-2 opacity-0 md:-bottom-12 md:left-auto md:right-20 md:translate-x-0 md:gap-4">
           <button
             onClick={() => scrollToTarget('#contact')}
-            aria-label="Go to contact"
+            aria-label={h.goContact}
             className="group flex h-9 w-9 items-center justify-center rounded-full border border-gray-400/30 bg-black/20 backdrop-blur-md transition-all hover:border-gray-400/50 hover:bg-white/10 md:h-12 md:w-12"
           >
             <svg className="h-3 w-3 text-gray-300 transition-transform duration-300 group-hover:rotate-45 md:h-4 md:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -61,7 +63,7 @@ export default function Hero({ ready }: { ready: boolean }) {
             onClick={() => scrollToTarget('#contact')}
             className="flex items-center justify-center rounded-full border border-gray-400/30 bg-black/20 px-5 py-2 backdrop-blur-md transition-all hover:border-gray-400/50 hover:bg-white/10 md:px-6 md:py-2.5"
           >
-            <span className="text-xs font-light tracking-wider text-gray-300 italic md:text-base">Contact</span>
+            <span className="text-xs font-light tracking-wider text-gray-300 italic md:text-base">{h.contact}</span>
           </button>
         </div>
       </div>

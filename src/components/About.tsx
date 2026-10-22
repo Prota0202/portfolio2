@@ -1,4 +1,4 @@
-import { intro, stackRows } from '../data'
+import { usePortfolio } from '../i18n/context'
 
 function Pill({ label }: { label: string }) {
   return (
@@ -26,11 +26,15 @@ function MarqueeRow({ items, reverse, duration }: { items: string[]; reverse?: b
 }
 
 export default function About() {
+  const { content } = usePortfolio()
+  const { intro, stackRows } = content
+  const a = content.ui.about
+
   return (
     <section id="about" className="relative bg-[#050505] px-6 pt-24 pb-0 text-white md:px-16 md:pt-32">
       <div className="mx-auto grid max-w-7xl items-center gap-12 md:grid-cols-[1fr_1.05fr]">
         <div data-reveal className="flex flex-col items-start md:items-center">
-          <span className="label mb-2">About me</span>
+          <span className="label mb-2">{a.label}</span>
           <h2 className="text-chrome font-display text-[26vw] leading-[0.85] font-black tracking-tighter md:text-[11rem]">Intro</h2>
         </div>
         <div data-reveal data-delay="0.15" className="rounded-2xl border border-white/10 bg-white/[0.035] p-6 text-[15px] leading-relaxed text-white/75 shadow-2xl backdrop-blur md:p-8">
@@ -48,7 +52,7 @@ export default function About() {
 
       <div className="mt-24 border-t border-white/10 pt-6 md:mt-32">
         <div className="mb-5 flex items-center gap-4">
-          <span className="label">The stack</span>
+          <span className="label">{a.stack}</span>
           <span className="h-px flex-1 bg-white/10" />
         </div>
         <div className="-mx-6 space-y-2 md:-mx-16">

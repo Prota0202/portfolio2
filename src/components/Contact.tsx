@@ -1,5 +1,5 @@
 import { scrollToTarget } from '../lib/scroll'
-import { profile } from '../data'
+import { usePortfolio } from '../i18n/context'
 import Smoke from './Smoke'
 
 function Icon({ d }: { d: string }) {
@@ -21,10 +21,22 @@ const ICONS = {
 const year = new Date().getFullYear()
 
 export default function Contact() {
+  const { profile, content } = usePortfolio()
+  const c = content.ui.contact
+  const nav = content.ui.nav
+
   const rows = [
-    { k: 'Email', v: profile.email, href: `mailto:${profile.email}` },
-    { k: 'Phone', v: profile.phone, href: `tel:${profile.phone.replace(/\s/g, '')}` },
-    { k: 'Based in', v: profile.location },
+    { k: c.email, v: profile.email, href: `mailto:${profile.email}` },
+    { k: c.phone, v: profile.phone, href: `tel:${profile.phone.replace(/\s/g, '')}` },
+    { k: c.basedIn, v: profile.location },
+  ]
+
+  const footerLinks = [
+    { label: nav.home, href: '#home' },
+    { label: nav.about, href: '#about' },
+    { label: nav.services, href: '#service' },
+    { label: nav.projects, href: '#work' },
+    { label: nav.experience, href: '#experience' },
   ]
 
   return (
@@ -36,18 +48,16 @@ export default function Contact() {
         <div data-reveal>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 font-display text-[9px] font-semibold tracking-[0.28em] text-white/70 uppercase backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-            Available for work
+            {c.available}
           </span>
-          <h2 className="text-chrome mt-5 font-display text-5xl leading-none font-black tracking-tighter md:text-6xl">Get in touch</h2>
-          <p className="mt-6 max-w-sm text-[14px] leading-relaxed text-white/70">
-            Looking to build a career in AI engineering in a team that ships fast. Email is the best way to reach me.
-          </p>
+          <h2 className="text-chrome mt-5 font-display text-5xl leading-none font-black tracking-tighter md:text-6xl">{c.title}</h2>
+          <p className="mt-6 max-w-sm text-[14px] leading-relaxed text-white/70">{c.blurb}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href={`mailto:${profile.email}`}
               className="inline-flex items-center gap-2 rounded-full bg-[#f1eee8] px-5 py-2.5 text-[12px] font-semibold text-black transition-transform hover:scale-105"
             >
-              Send an email <Icon d={ICONS.mail} />
+              {c.sendEmail} <Icon d={ICONS.mail} />
             </a>
             <a
               href={profile.linkedin}
@@ -74,12 +84,12 @@ export default function Contact() {
             </div>
           ))}
           <div className="px-6 py-5">
-            <div className="label !text-[8px]">Elsewhere</div>
+            <div className="label !text-[8px]">{c.elsewhere}</div>
             <div className="mt-3 flex gap-2">
               {[
                 { href: profile.github, d: ICONS.github, label: 'GitHub' },
                 { href: profile.linkedin, d: ICONS.linkedin, label: 'LinkedIn' },
-                { href: `mailto:${profile.email}`, d: ICONS.mail, label: 'Email' },
+                { href: `mailto:${profile.email}`, d: ICONS.mail, label: c.email },
               ].map((s) => (
                 <a
                   key={s.label}
@@ -98,17 +108,11 @@ export default function Contact() {
       </div>
 
       <footer className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-4 border-t border-white/10 px-6 pt-6 pb-9 text-[11px] text-white/45 md:flex-row md:items-center md:justify-between md:px-16">
-        <p>© {year} {profile.fullName}. All rights reserved.</p>
+        <p>{c.rights(year, profile.fullName)}</p>
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-3">
-          {[
-            ['Home', '#home'],
-            ['About', '#about'],
-            ['Services', '#service'],
-            ['Projects', '#work'],
-            ['Experience', '#experience'],
-          ].map(([l, h]) => (
-            <button key={h} onClick={() => scrollToTarget(h)} className="transition-colors hover:text-white">
-              {l}
+          {footerLinks.map((l) => (
+            <button key={l.href} onClick={() => scrollToTarget(l.href)} className="transition-colors hover:text-white">
+              {l.label}
             </button>
           ))}
         </nav>

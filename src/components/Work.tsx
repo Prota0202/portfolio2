@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from '../lib/scroll'
-import { profile, projects } from '../data'
+import { usePortfolio } from '../i18n/context'
 import ProjectVisual from './ProjectVisual'
 
 function Arrow() {
@@ -12,6 +12,9 @@ function Arrow() {
 }
 
 export default function Work() {
+  const { profile, content } = usePortfolio()
+  const { projects } = content
+  const w = content.ui.work
   const root = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -27,32 +30,30 @@ export default function Work() {
       })
     }, root)
     return () => ctx.revert()
-  }, [])
+  }, [content])
 
   return (
     <section id="work" ref={root} className="relative bg-[#050505] pt-28 text-white md:pt-40">
       <div className="mb-16 flex flex-col gap-8 px-6 md:mb-24 md:flex-row md:items-start md:justify-between md:px-16">
         <h2 data-reveal className="flex items-baseline gap-3 font-display text-5xl leading-none font-black tracking-tighter uppercase md:text-7xl">
-          <span className="text-chrome">Selected</span>
-          <span className="font-serif text-5xl font-normal tracking-normal text-white/90 normal-case italic md:text-7xl">work</span>
+          <span className="text-chrome">{w.selected}</span>
+          <span className="font-serif text-5xl font-normal tracking-normal text-white/90 normal-case italic md:text-7xl">{w.work}</span>
         </h2>
         <div data-reveal data-delay="0.1" className="max-w-xs">
-          <p className="text-[13px] leading-relaxed text-white/60">
-            AI-powered products built end to end — LLM and machine learning pipelines on one side, TypeScript full-stack applications on the other.
-          </p>
+          <p className="text-[13px] leading-relaxed text-white/60">{w.blurb}</p>
           <a
             href={profile.github}
             target="_blank"
             rel="noreferrer"
             className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#f1eee8] px-5 py-2 text-[11px] font-semibold text-black transition-transform hover:scale-105"
           >
-            Read More <Arrow />
+            {w.readMore} <Arrow />
           </a>
         </div>
       </div>
 
       {projects.map((p, i) => (
-        <article key={p.subtitle} data-project className="sticky top-0 flex h-screen items-center bg-[#050505]">
+        <article key={p.subtitle + i} data-project className="sticky top-0 flex h-screen items-center bg-[#050505]">
           <div data-project-inner className="grid w-full items-center gap-8 px-6 pt-16 md:grid-cols-[1.65fr_1fr] md:gap-14 md:px-8">
             <div className="h-[46vh] md:h-[72vh]">
               <ProjectVisual kind={p.visual} />

@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, scrollToTarget, ScrollTrigger } from '../lib/scroll'
-import { services } from '../data'
+import { usePortfolio } from '../i18n/context'
 
-function Row({ index, open, onToggle }: { index: number; open: boolean; onToggle: () => void }) {
-  const s = services[index]
+function Row({
+  index,
+  open,
+  onToggle,
+  viewProjects,
+}: {
+  index: number
+  open: boolean
+  onToggle: () => void
+  viewProjects: string
+}) {
+  const { content } = usePortfolio()
+  const s = content.services[index]
   const body = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -46,7 +57,7 @@ function Row({ index, open, onToggle }: { index: number; open: boolean; onToggle
                 onClick={() => scrollToTarget('#work')}
                 className="mt-6 rounded-full bg-[#f1eee8] px-6 py-2.5 font-display text-[11px] font-bold tracking-[0.18em] text-black uppercase transition-transform hover:scale-105"
               >
-                View projects
+                {viewProjects}
               </button>
             )}
           </div>
@@ -57,6 +68,9 @@ function Row({ index, open, onToggle }: { index: number; open: boolean; onToggle
 }
 
 export default function Services() {
+  const { content } = usePortfolio()
+  const { services } = content
+  const svc = content.ui.services
   const [open, setOpen] = useState(0)
   const heading = useRef<HTMLHeadingElement>(null)
 
@@ -69,25 +83,25 @@ export default function Services() {
       )
     }, heading)
     return () => ctx.revert()
-  }, [])
+  }, [content])
 
   return (
     <section id="service" className="relative bg-[#050505] px-6 pt-28 pb-0 text-white md:px-16 md:pt-40">
       <h2 ref={heading} className="mb-14 font-display text-[15vw] leading-[0.88] font-black tracking-tighter uppercase md:mb-20 md:text-[9rem]">
         <span className="block overflow-hidden">
           <span data-service-line className="text-chrome block">
-            What I
+            {svc.line1}
           </span>
         </span>
         <span className="block overflow-hidden">
           <span data-service-line className="text-chrome block md:pl-[18vw]">
-            can do
+            {svc.line2}
           </span>
         </span>
       </h2>
       <div className="-mx-6 border-t border-white/10 px-6 md:-mx-16 md:px-16">
         {services.map((_, i) => (
-          <Row key={i} index={i} open={open === i} onToggle={() => setOpen((o) => (o === i ? -1 : i))} />
+          <Row key={i} index={i} open={open === i} onToggle={() => setOpen((o) => (o === i ? -1 : i))} viewProjects={svc.viewProjects} />
         ))}
       </div>
     </section>
